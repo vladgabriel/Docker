@@ -2,7 +2,7 @@ FROM ubuntu:14.04
 MAINTAINER Vlad Vedinas [vedinasvlad@gmail.com]
 
 # set envs
-ENV SUDOER nodedev # user to install node
+ENV SUDOER nodedev
 ENV NVM_DIR /home/$SUDOER/.nvm
 ENV NODE_VERSION v4.2.1
 ENV NVM_VERSION v0.29.0
@@ -20,6 +20,7 @@ RUN \
         libssl-dev \
         curl \
         git
+
 #create node user
 RUN \
     useradd -ms /bin/sh $SUDOER && \
@@ -37,8 +38,15 @@ RUN \
 ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
 ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
 
+# update npm to version 3
+RUN \
+    npm install -g npm@3.0
 # install npm packages
 RUN \
     npm install -g \
         yo \
-        generator-node
+        generator-node \
+        bower \
+        grunt \
+        grunt-cli \
+        gulp

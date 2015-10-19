@@ -1,41 +1,44 @@
 FROM ubuntu:14.04
 MAINTAINER Vlad Vedinas [vedinasvlad@gmail.com]
 
-# node version to install
+# set envs
+ENV SUDOER nodedev # user to install node
+ENV NVM_DIR /home/$SUDOER/.nvm
 ENV NODE_VERSION v4.2.1
-# nodeuser
-ENV SUDOER nodedev
+ENV NVM_VERSION v0.29.0
 
-# run system updates
+# enable sh in order to use "source"
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+# system updates
 RUN \
     apt-get update && \
     apt-get upgrade -y
-
-# install dependencies for nvm
+#install dependencies
 RUN \
     apt-get install -y \
         build-essential \
         libssl-dev \
-        curl
-
-# create sudoer
+        curl \
+        git
+#create node user
 RUN \
-    useradd -ms /bin/bash $SUDOER && \
+    useradd -ms /bin/sh $SUDOER && \
     usermod -a -G  sudo $SUDOER && \
     echo "$SUDOER    ALL=NOPASSWD:ALL" >> /etc/sudoers
 
 USER $SUDOER
-
-# install nvm
+# install nvm & node
 RUN \
-    curl --location https://raw.github.com/creationix/nvm/master/install.sh | sh && \
-    sudo /bin/bash -c "echo \"[[ -s \$HOME/.nvm/nvm.sh ]] && . \$HOME/.nvm/nvm.sh\" >> /etc/profile.d/npm.sh" && \
-    echo "[[ -s $HOME/.nvm/nvm.sh ]] && . $HOME/.nvm/nvm.sh" >> $HOME/.bashrc
+    curl https://raw.githubusercontent.com/creationix/nvm/$NVM_VERSION/install.sh | bash && \
+    source ~/.profile && \
+    nvm install $NODE_VERSION
 
-# install node
-#RUN \
-#    nvm install $NODE_VERSION
+# set node location
+ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
 
-#RUN \
-#    npm install yo && \
-#    npm install --global generator-node
+# install npm packages
+RUN \
+    npm install -g \
+        yo \
+        generator-node

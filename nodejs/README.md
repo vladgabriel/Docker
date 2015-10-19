@@ -1,1 +1,2 @@
-file not complete
+- edit to add more npm modules / dependencies might be necessary to install
+- build & play / use nodedev user in order to use yeoman generators

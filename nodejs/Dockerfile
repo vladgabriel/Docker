@@ -19,7 +19,8 @@ RUN \
         build-essential \
         libssl-dev \
         curl \
-        git
+        git \
+        python
 
 #create node user
 RUN \
@@ -49,4 +50,5 @@ RUN \
         bower \
         grunt \
         grunt-cli \
-        gulp
+        gulp \
+        generator-angular-fullstack

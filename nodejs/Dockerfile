@@ -51,4 +51,6 @@ RUN \
         grunt \
         grunt-cli \
         gulp \
-        generator-angular-fullstack
+        generator-angular-fullstack \
+        nodemon \
+        forever

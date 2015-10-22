@@ -39,9 +39,9 @@ RUN \
 ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
 ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
 
-# update npm to version 3
+# update npm to version 3. https://github.com/npm/npm/releases - get latest
 RUN \
-    npm install -g npm@3.0
+    npm install -g npm@3.3.9
 # install npm packages
 RUN \
     npm install -g \

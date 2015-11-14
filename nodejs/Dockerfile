@@ -20,13 +20,17 @@ RUN \
         libssl-dev \
         curl \
         git \
-        python
+        python \
+        ruby
 
 #create node user
 RUN \
     useradd -ms /bin/sh $SUDOER && \
     usermod -a -G  sudo $SUDOER && \
     echo "$SUDOER    ALL=NOPASSWD:ALL" >> /etc/sudoers
+# sass installation
+RUN \
+    gem install sass
 
 USER $SUDOER
 # install nvm & node and make it globally available
@@ -38,13 +42,11 @@ RUN \
 
 # update npm to version 3. https://github.com/npm/npm/releases - get latest
 RUN \
-    sudo npm install -g npm@latest
-# set rights for $SUDOER to run npm
-RUN \
-    sudo chown -R $(whoami) ~/.npm
+    sudo npm install -g npm@latest && \
+    sudo chown -R $SUDOER ~/.npm
 # install npm packages
 RUN \
-    npm install -g \
+    sudo npm install -g \
         yo \
         generator-node \
         bower \

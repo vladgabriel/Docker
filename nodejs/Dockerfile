@@ -56,3 +56,8 @@ RUN \
 
 #grunt should be install as dev-dependency in your project
 #sudo npm install grunt --save-dev
+
+#npm install can exceed windows shared folder path length
+#to avoid this you need to do the following:
+#mkdir /tmp/node_modules
+#ln -s /tmp/node_modules /path/to/your/project/node_modules

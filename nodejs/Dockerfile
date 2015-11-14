@@ -3,8 +3,8 @@ MAINTAINER Vlad Vedinas [vedinasvlad@gmail.com]
 
 # set envs
 ENV SUDOER nodedev
-ENV NVM_DIR /home/$SUDOER/.nvm
-ENV NODE_VERSION v4.2.1
+# node v4.2.2 is LTS
+ENV NODE_VERSION v4.2.2
 ENV NVM_VERSION v0.29.0
 
 # enable sh in order to use "source"
@@ -29,28 +29,30 @@ RUN \
     echo "$SUDOER    ALL=NOPASSWD:ALL" >> /etc/sudoers
 
 USER $SUDOER
-# install nvm & node
+# install nvm & node and make it globally available
 RUN \
     curl https://raw.githubusercontent.com/creationix/nvm/$NVM_VERSION/install.sh | bash && \
     source ~/.profile && \
-    nvm install $NODE_VERSION
-
-# set node location
-ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
-ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+    nvm install $NODE_VERSION && \
+    n=$(which node);n=${n%/bin/node}; sudo chmod -R 755 $n/bin/*; sudo cp -r $n/{bin,lib,share} /usr/local
 
 # update npm to version 3. https://github.com/npm/npm/releases - get latest
 RUN \
-    npm install -g npm@3.3.9
+    sudo npm install -g npm@latest
+# set rights for $SUDOER to run npm
+RUN \
+    sudo chown -R $(whoami) ~/.npm
 # install npm packages
 RUN \
     npm install -g \
         yo \
         generator-node \
         bower \
-        grunt \
         grunt-cli \
         gulp \
         generator-angular-fullstack \
         nodemon \
         forever
+
+#grunt should be install as dev-dependency in your project
+#sudo npm install grunt --save-dev
